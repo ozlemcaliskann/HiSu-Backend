@@ -6,10 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-@RequestMapping("/clubs")
+@RequestMapping("/api/clubs") // ✅ Matches your frontend call
 @RequiredArgsConstructor
 public class ClubController {
 
@@ -18,5 +19,10 @@ public class ClubController {
     @PostMapping
     public ResponseEntity<String> createClub(@RequestBody StudentClub club) throws ExecutionException, InterruptedException {
         return ResponseEntity.ok(clubService.createClub(club));
+    }
+
+    @GetMapping // ✅ Added for GET request testing
+    public ResponseEntity<List<StudentClub>> getAllClubs() throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok(clubService.getAllClubs());
     }
 }
