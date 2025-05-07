@@ -11,6 +11,7 @@ public class Comment {
     @DocumentId
     private String id;
     private String userId;
+    private String userEmail;
     private TargetType targetType;
     private String targetId;
     private String content;
@@ -18,6 +19,6 @@ public class Comment {
     private Timestamp updatedAt;
 
     public enum TargetType {
-        VENUE, LESSON, CLUB
+        VENUE, LESSON, CLUB, SERVICE
     }
 }
