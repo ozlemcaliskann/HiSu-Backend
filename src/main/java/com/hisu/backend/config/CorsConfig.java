@@ -7,7 +7,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 public class CorsConfig {
@@ -20,25 +19,13 @@ public class CorsConfig {
         // Allow credentials
         config.setAllowCredentials(true);
 
-        // Allow origins for different environments
-        List<String> allowedOrigins = Arrays.asList(
-                "http://localhost:19006",      // Expo web
-                "http://localhost:19000",      // Expo development
-                "http://localhost:19001",      // Expo development alternate
-                "http://localhost:19002",      // Expo development alternate
-                "http://10.0.2.2:19006",       // Android emulator
-                "http://10.0.2.2:8080",        // Android emulator backend
-                "http://localhost:8080",       // Local backend
-                "capacitor://localhost",       // Capacitor
-                "ionic://localhost",           // Ionic
-                "http://localhost",            // General localhost
-                "http://localhost:3000"        // React development
-        );
-
+        // Set allowed origin patterns
         config.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:[*]",
                 "http://10.0.2.2:[*]",
+                "http://192.168.1.[*]:[*]",    // Yerel ağ IP'leri
                 "exp://[*]",                   // Expo development URLs
+                "exp://192.168.1.[*]:[*]",     // Expo IP-tabanlı development
                 "https://*.hisu.app"           // Production domain (adjust as needed)
         ));
 

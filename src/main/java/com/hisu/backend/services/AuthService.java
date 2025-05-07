@@ -4,7 +4,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.hisu.backend.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.BadCredentialsException;
 
@@ -14,12 +13,13 @@ import java.util.concurrent.ExecutionException;
 public class AuthService {
     private final FirestoreService firestoreService;
     private final FirebaseAuth firebaseAuth;
+    private final UserService userService;
     private static final String COLLECTION_NAME = "users";
 
-    @Autowired
-    public AuthService(FirestoreService firestoreService) {
+    public AuthService(FirestoreService firestoreService, FirebaseAuth firebaseAuth, UserService userService) {
         this.firestoreService = firestoreService;
-        this.firebaseAuth = FirebaseAuth.getInstance();
+        this.firebaseAuth = firebaseAuth;
+        this.userService = userService;
     }
 
     public User authenticateUser(String idToken) throws BadCredentialsException {

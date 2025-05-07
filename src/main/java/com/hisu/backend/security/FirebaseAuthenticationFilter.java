@@ -24,6 +24,15 @@ import java.util.List;
 public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(FirebaseAuthenticationFilter.class);
+    
+    // Public yollar listesi - bu yollara token gerekmeden erişilebilir
+    private static final List<String> PUBLIC_PATHS = Arrays.asList(
+        "/auth/",
+        "/api/test/",
+        "/api/serviceProviders",
+        "/api/clubs",
+        "/api/activities"
+    );
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -34,16 +43,26 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         
-        // Allow public endpoints without authentication
-        if (request.getRequestURI().startsWith("/auth/") || 
-            request.getRequestURI().startsWith("/api/test/public")) {
+        // Tüm GET isteklerine izin ver
+        if (request.getMethod().equals("GET")) {
+            logger.info("Anonymous GET access: {}", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
         
+        // Public endpoint'ler için doğrulama atla
+        String requestUri = request.getRequestURI();
+        for (String publicPath : PUBLIC_PATHS) {
+            if (requestUri.startsWith(publicPath)) {
+                logger.info("Public endpoint access: {}", requestUri);
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+        
         String authHeader = request.getHeader("Authorization");
 
-        // If no token is provided, return 401 Unauthorized
+        // Token yoksa 401 Unauthorized dön
         if (authHeader == null || authHeader.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Authentication required");
@@ -51,22 +70,22 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            // Extract token (with or without "Bearer " prefix)
+            // Token'ı çıkar ("Bearer " öneki var mı yok mu)
             String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
             
-            // Verify the token
+            // Token'ı doğrula
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
             String uid = decodedToken.getUid();
             String email = decodedToken.getEmail();
 
-            // Check if email is from Sabanci University
+            // Sabancı Üniversitesi mail kontrolü
             if (email == null || !email.endsWith("@sabanciuniv.edu")) {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.getWriter().write("Only @sabanciuniv.edu email addresses are allowed");
                 return;
             }
 
-            // Create the authentication with PRIVATE role
+            // PRIVATE rolü ile authentication oluştur
             List<SimpleGrantedAuthority> authorities = Arrays.asList(
                 new SimpleGrantedAuthority("ROLE_PRIVATE")
             );
@@ -77,13 +96,13 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
                     authorities
             );
             
-            // Set authentication in context
+            // Authentication'ı context'e set et
             SecurityContextHolder.getContext().setAuthentication(authentication);
             
-            // Add Firebase user ID to request attributes
+            // Firebase user ID'sini request özniteliklerine ekle
             request.setAttribute("firebaseUid", uid);
             
-            // Print a clear log message with PRIVATE role
+            // Log mesajı
             logger.info("User authenticated successfully: UID={} Role=ROLE_PRIVATE", uid);
 
         } catch (FirebaseAuthException e) {
@@ -92,7 +111,7 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Continue with filter chain
+        // Filter zinciriyle devam et
         filterChain.doFilter(request, response);
     }
 }

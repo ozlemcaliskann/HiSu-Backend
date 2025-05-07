@@ -2,7 +2,6 @@ package com.hisu.backend.controllers;
 
 import com.hisu.backend.models.Venue;
 import com.hisu.backend.services.VenueService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +14,6 @@ import java.util.concurrent.ExecutionException;
 public class VenueController {
     private final VenueService venueService;
 
-    @Autowired
     public VenueController(VenueService venueService) {
         this.venueService = venueService;
     }

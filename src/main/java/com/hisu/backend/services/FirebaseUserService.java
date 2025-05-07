@@ -2,7 +2,6 @@ package com.hisu.backend.services;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -10,13 +9,9 @@ import java.util.Map;
 
 @Service
 public class FirebaseUserService {
-
-
-
     private final FirebaseAuth firebaseAuth;
 
-    // ✅ Constructor Injection to Initialize FirebaseAuth
-    @Autowired
+    // Constructor Injection to Initialize FirebaseAuth
     public FirebaseUserService(FirebaseAuth firebaseAuth) {
         this.firebaseAuth = firebaseAuth;
     }

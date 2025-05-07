@@ -4,9 +4,7 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.FieldValue;
 import com.hisu.backend.models.Venue;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +17,6 @@ public class VenueService {
     private final Firestore firestore;
     private static final String COLLECTION_NAME = "venues";
 
-    @Autowired
     public VenueService(Firestore firestore) {
         this.firestore = firestore;
     }

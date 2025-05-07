@@ -16,6 +16,6 @@ public class Like {
     private Timestamp createdAt;
 
     public enum TargetType {
-        VENUE, LESSON, CLUB
+        VENUE, LESSON, CLUB, SERVICE
     }
 }

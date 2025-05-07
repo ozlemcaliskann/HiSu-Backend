@@ -2,7 +2,6 @@ package com.hisu.backend.controllers;
 
 import com.hisu.backend.models.User;
 import com.hisu.backend.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,7 +17,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -60,7 +58,6 @@ public class UserController {
     }
 
     /**
-
      * Get all users (admin only)
      */
     @GetMapping

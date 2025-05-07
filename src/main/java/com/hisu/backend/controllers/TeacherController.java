@@ -2,7 +2,6 @@ package com.hisu.backend.controllers;
 
 import com.hisu.backend.models.Teacher;
 import com.hisu.backend.services.TeacherService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +14,6 @@ import java.util.concurrent.ExecutionException;
 public class TeacherController {
     private final TeacherService teacherService;
 
-    @Autowired
     public TeacherController(TeacherService teacherService) {
         this.teacherService = teacherService;
     }

@@ -2,7 +2,6 @@ package com.hisu.backend.services;
 
 import com.google.cloud.firestore.*;
 import com.hisu.backend.models.Teacher;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,7 +16,6 @@ public class TeacherService {
     private final Firestore firestore;
     private static final String COLLECTION_NAME = "teachers";
 
-    @Autowired
     public TeacherService(Firestore firestore) {
         this.firestore = firestore;
     }
