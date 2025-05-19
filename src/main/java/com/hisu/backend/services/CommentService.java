@@ -6,7 +6,6 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.hisu.backend.models.Comment;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,11 +18,12 @@ import java.util.stream.Collectors;
 @Service
 public class CommentService {
     private final Firestore firestore;
+    private final UserService userService;
     private static final String COLLECTION_NAME = "comments";
 
-    @Autowired
-    public CommentService(Firestore firestore) {
+    public CommentService(Firestore firestore, UserService userService) {
         this.firestore = firestore;
+        this.userService = userService;
     }
 
     public String create(Comment comment) throws ExecutionException, InterruptedException {

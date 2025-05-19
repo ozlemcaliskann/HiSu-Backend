@@ -1,8 +1,9 @@
 package com.hisu.backend.controllers;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.hisu.backend.models.Comment;
 import com.hisu.backend.services.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,28 +12,34 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-@RequestMapping("/api/comments")
+@RequestMapping("/api")
 public class CommentController {
     private final CommentService commentService;
 
-    @Autowired
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }
 
-    @PostMapping
+    @PostMapping("/comments")
     public ResponseEntity<String> createComment(
             @RequestAttribute("firebaseUid") String userId,
             @RequestBody Comment comment) throws ExecutionException, InterruptedException {
 
         comment.setUserId(userId);
-
+        try {
+            comment.setUserEmail(
+                FirebaseAuth.getInstance().getUser(userId).getEmail()
+            );
+        } catch (FirebaseAuthException e) {
+            // Log the error but continue - email is optional
+            System.err.println("Error fetching user email: " + e.getMessage());
+        }
 
         String commentId = commentService.create(comment);
         return ResponseEntity.ok(commentId);
     }
 
-    @GetMapping("/target")
+    @GetMapping("/comments/target")
     public ResponseEntity<List<Comment>> getCommentsByTarget(
             @RequestParam Comment.TargetType targetType,
             @RequestParam String targetId) throws ExecutionException, InterruptedException {
@@ -41,7 +48,7 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/comments/{id}")
     public ResponseEntity<Comment> getCommentById(@PathVariable String id)
             throws ExecutionException, InterruptedException {
 
@@ -52,7 +59,7 @@ public class CommentController {
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/comments/{id}")
     public ResponseEntity<Void> updateComment(
             @RequestAttribute("firebaseUid") String userId,
             @PathVariable String id,
@@ -62,7 +69,7 @@ public class CommentController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/comments/{id}")
     public ResponseEntity<Void> deleteComment(
             @RequestAttribute("firebaseUid") String userId,
             @PathVariable String id) throws ExecutionException, InterruptedException {
